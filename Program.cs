@@ -1,4 +1,4 @@
-var builder = WebApplication.CreateBuilder(args);
+var builder = WebApplication.CreateBuilder(args); //prepares the hosting infrastructure, including configuration for the web server
 
 // Add services to the container.
 
@@ -15,11 +15,22 @@ if (app.Environment.IsDevelopment())
     app.UseSwagger();
     app.UseSwaggerUI();
 }
-
-app.UseHttpsRedirection();
+else
+{
+    app.UseHttpsRedirection();
+}
 
 app.UseAuthorization();
 
 app.MapControllers();
 
 app.Run();
+
+
+// You enter the website URL in your browser.
+// The request reaches the Windows Server over the network.
+// A web server such as IIS may receive the request first.
+// The frontend files (HTML, CSS, JavaScript) are returned to the browser.
+// When Angular calls your backend API, that request reaches your .NET application, often through IIS to Kestrel.
+// Your controller executes the code, retrieves data if needed, and returns a response, often JSON.
+// The browser receives the response and displays the result.
