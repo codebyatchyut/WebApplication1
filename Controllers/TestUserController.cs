@@ -1,4 +1,5 @@
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
 using WebApplication1.Data;
 
 namespace WebApplication1.Controllers
@@ -13,23 +14,41 @@ namespace WebApplication1.Controllers
             _dataContextDapper = new DataContextDapper(config);
         }
 
-        [HttpGet("GetConnection")]
-        public DateTime GetDateTime()
+        //[HttpGet("GetConnection")]
+        //public DateTime GetDateTime()
+        //{
+        //    return _dataContextDapper.LoadSingleData<DateTime>("SELECT GETDATE()");
+        //}
+
+
+        //[HttpGet("GetUser/{userName}")]
+        //public string[] GetUser(string userName)
+        //{
+        //    string[] usersArray =
+        //    {
+        //        "User1",
+        //        "User2",
+        //        userName
+        //    };
+        //    return usersArray;
+        //}
+
+        [HttpGet("GetUsers")]
+        public IEnumerable<Models.Users> GetUsers()
         {
-            return _dataContextDapper.LoadSingleData<DateTime>("SELECT GETDATE()");
+            string sqlCommand = @"
+                                    SELECT * FROM TutorialAppSchema.Users
+                                ";
+           return _dataContextDapper.LoadData<Models.Users>(sqlCommand);
         }
 
-
-        [HttpGet("GetUser/{userName}")]
-        public string[] GetUser(string userName)
+        [HttpGet("GetUser/{UserId}")]
+        public Models.Users GetUser(int UserId)
         {
-            string[] usersArray =
-            {
-                "User1",
-                "User2",
-                userName
-            };
-            return usersArray;
+            string sqlCommand = @$"
+                                    SELECT * FROM TutorialAppSchema.Users WHERE UserId = {UserId}
+                                ";
+            return _dataContextDapper.LoadSingleData<Models.Users>(sqlCommand);
         }
     }
 }
