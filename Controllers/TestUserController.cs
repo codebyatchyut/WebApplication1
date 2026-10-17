@@ -50,5 +50,38 @@ namespace WebApplication1.Controllers
                                 ";
             return _dataContextDapper.LoadSingleData<Models.Users>(sqlCommand);
         }
+
+        [HttpPut("EditUser")]
+        public IActionResult EditUser(Models.Users user)
+        {
+            string sqlCommand = @"
+                                    UPDATE TutorialAppSchema.Users
+                                    SET FirstName = @FirstName,
+                                        LastName = @LastName,
+                                        Email = @Email,
+                                        Gender = @Gender,
+                                        Active = @Active
+                                    WHERE UserId = @UserId
+                                ";
+            if (_dataContextDapper.ExecuteCommand(sqlCommand, user))
+            {
+                return Ok();
+            }
+            return NotFound($"User {user.UserId} not found");
+        }
+
+        [HttpPost("AddUser")]
+        public IActionResult AddUser(Dtos.UserToAddDto user)
+        {
+            string sqlCommand = @"
+                                    INSERT INTO TutorialAppSchema.Users (FirstName, LastName, Email, Gender, Active)
+                                    VALUES (@FirstName, @LastName, @Email, @Gender, @Active)
+                                ";
+            if (_dataContextDapper.ExecuteCommand(sqlCommand, user))
+            {
+                return Ok();
+            }
+            throw new Exception("Failed to add user");
+        }
     }
 }
