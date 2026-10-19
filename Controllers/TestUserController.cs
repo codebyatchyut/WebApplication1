@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using WebApplication1.Data;
+using WebApplication1.Dtos;
+using WebApplication1.Models;
 
 namespace WebApplication1.Controllers
 {
@@ -8,7 +9,8 @@ namespace WebApplication1.Controllers
     [Route("[controller]")]
     public class TestUserController : ControllerBase
     {
-        DataContextDapper _dataContextDapper;
+        private readonly DataContextDapper _dataContextDapper;
+
         public TestUserController(IConfiguration config)
         {
             _dataContextDapper = new DataContextDapper(config);
@@ -34,25 +36,25 @@ namespace WebApplication1.Controllers
         //}
 
         [HttpGet("GetUsers")]
-        public IEnumerable<Models.Users> GetUsers()
+        public IEnumerable<Users> GetUsers()
         {
             string sqlCommand = @"
                                     SELECT * FROM TutorialAppSchema.Users
                                 ";
-           return _dataContextDapper.LoadData<Models.Users>(sqlCommand);
+            return _dataContextDapper.LoadData<Users>(sqlCommand);
         }
 
-        [HttpGet("GetUser/{UserId}")]
-        public Models.Users GetUser(int UserId)
+        [HttpGet("GetUser/{userId}")]
+        public Users GetUser(int userId)
         {
             string sqlCommand = @$"
-                                    SELECT * FROM TutorialAppSchema.Users WHERE UserId = {UserId}
+                                    SELECT * FROM TutorialAppSchema.Users WHERE UserId = {userId}
                                 ";
-            return _dataContextDapper.LoadSingleData<Models.Users>(sqlCommand);
+            return _dataContextDapper.LoadSingleData<Users>(sqlCommand);
         }
 
         [HttpPut("EditUser")]
-        public IActionResult EditUser(Models.Users user)
+        public IActionResult EditUser(Users user)
         {
             string sqlCommand = @"
                                     UPDATE TutorialAppSchema.Users
@@ -71,7 +73,7 @@ namespace WebApplication1.Controllers
         }
 
         [HttpPost("AddUser")]
-        public IActionResult AddUser(Dtos.UserToAddDto user)
+        public IActionResult AddUser(UserToAddDto user)
         {
             string sqlCommand = @"
                                     INSERT INTO TutorialAppSchema.Users (FirstName, LastName, Email, Gender, Active)
